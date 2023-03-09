@@ -34,7 +34,7 @@ app.post('/upload', upload.single('file'), function (req, res) {
     title: 'Молоко Простоквашино отборное 3.2%',
     weight: 900,
     measure: 'гр',
-    item: '12345',
+    article: 12345,
     kkal: 60,
     protein: 8,
     fats: 5,
