@@ -12,7 +12,7 @@ app.use(express.static('public'))
 const DUMMY_PRODUCTS = [
   {
     id: 'p1',
-    title: 'Молоко Простоквашино отборное 3.2%',
+    title: 'Молоко',
     weight: 900,
     measure: 'гр',
     article: 12345,
@@ -40,14 +40,14 @@ const DUMMY_PRODUCTS = [
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'images/')
+    cb(null, 'images')
   },
   filename: (req, file, cb) => {
     cb(null, file.originalname)
   },
 })
 
-const upload = multer({ storage: storage })
+let upload = multer({ storage: storage })
 
 app.use(cors())
 
@@ -55,10 +55,16 @@ app.get('/', (req, res) => {
   res.send('Server is Ok')
 })
 
-app.post('/upload', upload.single('file'), function (req, res) {
-  setTimeout(() => {
-    res.json({ id: 'p1' })
-  }, 3000)
+app.post('/images', upload.single('file'), (req, res, next) => {
+  const file = req.file
+  console.log(1111, file.filename)
+  if (!file) {
+    const error = new Error('No File')
+    error.httpStatusCode = 400
+    return next(error)
+  }
+  const product = DUMMY_PRODUCTS.filter((product) => product.id === 'p1')
+  res.json(...product)
 })
 
 app.post('/find', (req, res) => {
